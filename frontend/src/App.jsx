@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Users, AlertTriangle, LogOut, CheckCircle, Plus, Globe, FolderPlus, Trash2, UserMinus, UserCheck, UserX } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://smart-team-formation.onrender.com/api';
 
 const PREDEFINED_SKILLS = [
   "JavaScript", "Python", "Java", "C++", "C#", "React", "Node.js", "Express",
