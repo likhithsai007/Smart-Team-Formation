@@ -1,0 +1,13 @@
+{
+  "name": "smart-team-formation-root",
+  "version": "1.0.0",
+  "description": "Smart Team Formation Root Launcher",
+  "scripts": {
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
