@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Users, AlertTriangle, LogOut, CheckCircle, Plus, Globe, FolderPlus, Trash2, UserMinus, UserCheck, UserX } from 'lucide-react';
 
-const API_BASE = 'https://smart-team-formation-1.onrender.com';
+// Relative path forces React to fetch from the Vercel backend sitting on the same domain
+const API_BASE = '/api';
 
 const PREDEFINED_SKILLS = [
   "JavaScript", "Python", "Java", "C++", "C#", "React", "Node.js", "Express",

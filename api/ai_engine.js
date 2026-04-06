@@ -19,10 +19,11 @@ function predictTeamIssues(teamMembersData, projectData) {
     const allSkills = new Set();
     
     teamMembersData.forEach(member => {
-        member.skills.forEach(s => allSkills.add(s.skill.toLowerCase()));
+        if(member.skills) {
+            member.skills.forEach(s => allSkills.add(s.skill.toLowerCase()));
+        }
     });
-    
-    // Issue 1: Skill Mismatch / Gap
+
     const missingSkills = projectData.required_skills.filter(reqSkill => !allSkills.has(reqSkill.toLowerCase()));
     
     if (missingSkills.length > 0) {
@@ -33,12 +34,12 @@ function predictTeamIssues(teamMembersData, projectData) {
         });
     }
 
-    // Issue 2: Role Overflow (Redundancy)
     teamMembersData.forEach(member => {
+        if(!member.skills) return;
         const uniqueSkills = member.skills.filter(s => {
             let othersHaveIt = false;
             teamMembersData.forEach(other => {
-                if(other.id !== member.id && other.skills.some(os => os.skill.toLowerCase() === s.skill.toLowerCase())) othersHaveIt = true;
+                if(other.id !== member.id && other.skills && other.skills.some(os => os.skill.toLowerCase() === s.skill.toLowerCase())) othersHaveIt = true;
             });
             return !othersHaveIt;
         });
@@ -52,7 +53,6 @@ function predictTeamIssues(teamMembersData, projectData) {
         }
     });
 
-    // Issue 3: Potential Communication Bottleneck
     if (teamMembersData.length >= 4) {
         issues.push({
             issue_type: "COMMUNICATION_RISK",
