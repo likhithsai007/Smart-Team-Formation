@@ -11,9 +11,15 @@ const PREDEFINED_SKILLS = [
 ];
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('login');
+  const [currentUser, setCurrentUser] = useState(() => {
+    // Attempt to hydrate user from localStorage on initial boot
+    const saved = localStorage.getItem('smart_team_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [currentView, setCurrentView] = useState(() => {
+    return localStorage.getItem('smart_team_user') ? 'dashboard' : 'login';
+  });
   const [authMode, setAuthMode] = useState('login');
-  const [currentUser, setCurrentUser] = useState(null);
 
   const [projects, setProjects] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -80,6 +86,7 @@ export default function App() {
         const u = await res.json();
         u.password = loginPass;
         setCurrentUser(u);
+        localStorage.setItem('smart_team_user', JSON.stringify(u));
         setCurrentView('dashboard');
       } else {
         const errorData = await res.json();
@@ -101,6 +108,7 @@ export default function App() {
         const u = await res.json();
         u.password = regPass;
         setCurrentUser(u);
+        localStorage.setItem('smart_team_user', JSON.stringify(u));
         setCurrentView('dashboard');
       } else {
         const errorData = await res.json();
@@ -122,6 +130,7 @@ export default function App() {
         const u = await res.json();
         u.password = currentUser.password;
         setCurrentUser(u);
+        localStorage.setItem('smart_team_user', JSON.stringify(u));
         setRegGithub('');
       }
     } catch (e) { console.error(e); }
@@ -129,7 +138,10 @@ export default function App() {
 
   const addSkill = async (e) => {
     e.preventDefault();
-    if (!newSkill) return alert("Select a skill!");
+    if (!newSkill || !newSkillProf || !currentUser) {
+      alert("Please select a skill from the dropdown and assign a proficiency level before clicking Add!");
+      return;
+    }
     try {
       await fetch(`${API_BASE}/skills`, {
         method: 'POST',
@@ -197,6 +209,12 @@ export default function App() {
     } catch (e) { console.error(e); }
   };
 
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('smart_team_user');
+    setCurrentView('login');
+  };
+
   if (currentView === 'login') {
     return (
       <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
@@ -260,7 +278,7 @@ export default function App() {
           </div>
         </div>
         <div style={{ marginTop: 'auto', padding: '0 2rem' }}>
-          <div className="nav-item" style={{ padding: '0.5rem 0', color: 'var(--text-dim)' }} onClick={() => { setCurrentUser(null); setCurrentView('login'); }}>
+          <div className="nav-item" style={{ padding: '0.5rem 0', color: 'var(--text-dim)' }} onClick={handleLogout}>
             <LogOut className="nav-icon" /> Sign Out
           </div>
         </div>
