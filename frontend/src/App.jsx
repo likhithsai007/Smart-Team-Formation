@@ -81,7 +81,10 @@ export default function App() {
         u.password = loginPass;
         setCurrentUser(u);
         setCurrentView('dashboard');
-      } else alert("Invalid credentials!");
+      } else {
+        const errorData = await res.json();
+        alert(errorData.error || 'Login failed.');
+      }
     } catch (e) { console.error(e); }
   };
 
@@ -99,7 +102,10 @@ export default function App() {
         u.password = regPass;
         setCurrentUser(u);
         setCurrentView('dashboard');
-      } else alert("Registration failed.");
+      } else {
+        const errorData = await res.json();
+        alert(errorData.error || 'Registration failed.');
+      }
     } catch (e) { console.error(e); }
   };
 
